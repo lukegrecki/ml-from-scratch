@@ -3,8 +3,6 @@ from typing import List, Optional, Tuple, Callable, Generator, TypeVar, Type
 import csv
 import logging
 
-T = TypeVar("T", bound="DataSet")
-
 
 @dataclass
 class DataPoint:
@@ -27,11 +25,11 @@ class DataSet:
         return self.points[i]
 
     @classmethod
-    def from_dict(cls: Type[T], d) -> T:
+    def from_dict(cls, d):
         return cls(points=list(map(lambda x: DataPoint(x, d[x]), d)))
 
     @classmethod
-    def from_csv(cls: Type[T], filename) -> T:
+    def from_csv(cls, filename):
         points = []
         with open(filename, newline="") as f:
             reader = csv.reader(f)
@@ -55,7 +53,7 @@ class DataSet:
             for point in self.points:
                 writer.writerow([point.x, point.y])
 
-    def cast(self, types) -> T:
+    def cast(self, types):
         new_points = list(
             map(lambda p: DataPoint(types[0](p.x), types[1](p.y)), self.points)
         )
@@ -82,7 +80,7 @@ class DataSet:
 
 @dataclass
 class Predictions:
-    values: List[float] = field(default_factory=list)
+    points: List[DataPoint] = field(default_factory=list)
 
 
 @dataclass
@@ -94,14 +92,17 @@ class Parameters:
 def loss(data: DataSet, predictions: Predictions) -> float:
     sum = 0.0
     for i, point in enumerate(data.points):
-        sum += (point.y - predictions.values[i]) ** 2
+        sum += (point.y - predictions.points[i].y) ** 2
 
     return sum
 
 
 def predict(data: DataSet, parameters: Parameters) -> Predictions:
     return Predictions(
-        values=[parameters.b + parameters.m * point.x for point in data.points]
+        points=[
+            DataPoint(point.x, parameters.b + parameters.m * point.x)
+            for point in data.points
+        ]
     )
 
 
@@ -111,11 +112,11 @@ def update(
     n = len(data)
 
     b_derivative = sum(
-        [-2.0 * (data.points[i].y - predictions.values[i]) for i in range(n)]
+        [-2.0 * (data.points[i].y - predictions.points[i].y) for i in range(n)]
     )
     m_derivative = sum(
         [
-            -2.0 * data.points[i].x * (data.points[i].y - predictions.values[i])
+            -2.0 * data.points[i].x * (data.points[i].y - predictions.points[i].y)
             for i in range(n)
         ]
     )

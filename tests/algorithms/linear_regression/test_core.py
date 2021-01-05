@@ -22,7 +22,10 @@ def test_loss_is_accurate():
 def test_predict():
     parameters = Parameters(m=2.0, b=1.0)
     data = DataSet(points=[DataPoint(1.0, 2.0), DataPoint(5.0, 10.0)])
-    assert core.predict(data, parameters).values == [3.0, 11.0]
+    assert core.predict(data, parameters).points == [
+        DataPoint(1.0, 3.0),
+        DataPoint(5.0, 11.0),
+    ]
 
 
 def test_update_is_idempotent():
