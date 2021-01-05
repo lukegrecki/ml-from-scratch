@@ -1,7 +1,7 @@
 import random
 from typing import Iterable, Tuple
 import matplotlib.pyplot as plt
-from linear_regression.core import DataSet, DataPoint, Parameters
+from algorithms.linear_regression.core import DataSet, DataPoint, Parameters
 
 
 def generate(

@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from typing import List, Optional
-import logging
 
 
 @dataclass
@@ -81,7 +80,6 @@ def solve(
     for epoch in range(epochs):
         predictions = predict(data, guess)
         l = loss(data, predictions)
-        print(f"Current loss is {l}")
 
         if l < tolerance:
             return guess

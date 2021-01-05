@@ -1,6 +1,6 @@
-from linear_regression.core import Parameters, DataSet, DataPoint
-import linear_regression.core as core
-import linear_regression.data as data
+from algorithms.linear_regression.core import Parameters, DataSet, DataPoint
+import algorithms.linear_regression.core as core
+import algorithms.linear_regression.data as data
 import pytest
 
 
