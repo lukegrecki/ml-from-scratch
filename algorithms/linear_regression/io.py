@@ -18,6 +18,6 @@ def read_csv(filename: str) -> DataSet:
 def to_csv(ds: DataSet, filename: str, columns: Tuple[str, str]) -> None:
     with open(filename, "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(columns)
+        writer.writerow(list(columns))
         for point in ds.points:
             writer.writerow([point.x, point.y])
