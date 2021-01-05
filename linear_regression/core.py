@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Optional
 import logging
 
 
@@ -53,15 +53,18 @@ def update(
 ) -> Parameters:
     n = len(data)
 
-    b = guess.b - learning_rate * (2.0 / n) * sum(
-        [predictions.values[i] - data.points[i].y for i in range(n)]
+    b_derivative = sum(
+        [-2.0 * (data.points[i].y - predictions.values[i]) for i in range(n)]
     )
-    m = guess.m - learning_rate * (2.0 / n) * sum(
+    m_derivative = sum(
         [
-            (predictions.values[i] - data.points[i].y) * data.points[i].x
+            -2.0 * data.points[i].x * (data.points[i].y - predictions.values[i])
             for i in range(n)
         ]
     )
+
+    b = guess.b - (b_derivative / n) * learning_rate
+    m = guess.m - (m_derivative / n) * learning_rate
 
     return Parameters(m, b)
 
@@ -72,17 +75,17 @@ def solve(
     guess: Parameters,
     tolerance: float,
     data: DataSet,
-) -> Parameters:
+) -> Optional[Parameters]:
     n = len(data)
 
     for epoch in range(epochs):
         predictions = predict(data, guess)
         l = loss(data, predictions)
-        logging.info(f"Current loss is {l}")
+        print(f"Current loss is {l}")
 
         if l < tolerance:
             return guess
 
         guess = update(guess, learning_rate, data, predictions)
 
-    return guess
+    return None
