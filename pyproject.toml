@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "linear-regression"
+name = "ml-from-scratch"
 version = "0.1.0"
 description = ""
 authors = ["Luke Grecki <lukegrecki@gmail.com>"]

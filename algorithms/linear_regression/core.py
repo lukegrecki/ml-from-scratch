@@ -1,75 +1,9 @@
-from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Callable, Generator, TypeVar, Type
 import logging
+from .data import DataPoint, DataSet, Parameters
 
 
-@dataclass
-class DataPoint:
-    x: float
-    y: float
-
-
-@dataclass
-class DataSet:
-    points: List[DataPoint] = field(default_factory=list)
-    labels: Tuple[str, str] = ("x", "y")
-
-    def __len__(self) -> int:
-        return len(self.points)
-
-    def __iter__(self) -> Generator[DataPoint, None, None]:
-        yield from self.points
-
-    def __getitem__(self, i: int) -> DataPoint:
-        return self.points[i]
-
-    @classmethod
-    def from_dict(cls, d):
-        return cls(points=list(map(lambda x: DataPoint(x, d[x]), d)))
-
-    def add_point(self, point: DataPoint) -> None:
-        self.points.append(point)
-
-    def filter(self, f) -> List[DataPoint]:
-        return list(filter(f, self.points))
-
-    def cast(self, types):
-        new_points = list(
-            map(lambda p: DataPoint(types[0](p.x), types[1](p.y)), self.points)
-        )
-        return self.__class__(new_points)
-
-    def scale(self, index, factor):
-        new_points = []
-        for point in self.points:
-            if index == 0:
-                new_points.append(DataPoint(x=point.x / factor, y=point.y))
-            elif index == 1:
-                new_points.append(DataPoint(x=point.x, y=point.y / factor))
-        return self.__class__(new_points)
-
-    def offset(self, index, number):
-        new_points = []
-        for point in self.points:
-            if index == 0:
-                new_points.append(DataPoint(x=point.x - number, y=point.y))
-            elif index == 1:
-                new_points.append(DataPoint(x=point.x, y=point.y - number))
-        return self.__class__(new_points)
-
-
-@dataclass
-class Predictions:
-    points: List[DataPoint] = field(default_factory=list)
-
-
-@dataclass
-class Parameters:
-    m: float
-    b: float
-
-
-def loss(data: DataSet, predictions: Predictions) -> float:
+def loss(data: DataSet, predictions: DataSet) -> float:
     sum = 0.0
     for i, point in enumerate(data.points):
         sum += (point.y - predictions.points[i].y) ** 2
@@ -77,8 +11,8 @@ def loss(data: DataSet, predictions: Predictions) -> float:
     return sum
 
 
-def predict(data: DataSet, parameters: Parameters) -> Predictions:
-    return Predictions(
+def predict(data: DataSet, parameters: Parameters) -> DataSet:
+    return DataSet(
         points=[
             DataPoint(point.x, parameters.b + parameters.m * point.x)
             for point in data.points
@@ -87,7 +21,7 @@ def predict(data: DataSet, parameters: Parameters) -> Predictions:
 
 
 def update(
-    guess: Parameters, learning_rate: float, data: DataSet, predictions: Predictions
+    guess: Parameters, learning_rate: float, data: DataSet, predictions: DataSet
 ) -> Parameters:
     n = len(data)
 
