@@ -55,5 +55,5 @@ def test_solve_finds_a_correct_solution():
     tolerance = 0.001
     data = DataSet(points=[DataPoint(1.0, 3.0), DataPoint(5.0, 11.0)])
 
-    solution = core.solve(learning_rate, epochs, guess, tolerance, data)
-    assert core.loss(data, core.predict(data, solution)) < tolerance
+    solution, loss = core.solve(learning_rate, epochs, guess, tolerance, data)
+    assert loss < tolerance

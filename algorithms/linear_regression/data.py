@@ -1,7 +1,13 @@
 import random
-from typing import Iterable, Tuple
+from typing import Iterable, Tuple, List, Dict
 import matplotlib.pyplot as plt
 from algorithms.linear_regression.core import DataSet, DataPoint, Parameters
+import csv
+
+
+def load_csv(filename, encoding=None) -> List[Dict]:
+    with open(filename, newline="", encoding=encoding) as f:
+        return list(csv.DictReader(f))
 
 
 def generate(
@@ -9,7 +15,7 @@ def generate(
     input_range: Tuple[float, float],
     noise: float,
     parameters: Parameters,
-):
+) -> DataSet:
     data = DataSet()
     for i in range(number_of_points):
         x = random.uniform(input_range[0], input_range[1])
@@ -19,7 +25,7 @@ def generate(
     return data
 
 
-def plot(data: DataSet):
+def plot(data: DataSet) -> None:
     x = [point.x for point in data]
     y = [point.y for point in data]
 
