@@ -24,22 +24,6 @@ class DataSet:
     def __getitem__(self, i: int) -> DataPoint:
         return self.points[i]
 
-    @classmethod
-    def from_dict(cls, d):
-        return cls(points=list(map(lambda x: DataPoint(x, d[x]), d)))
-
-    def add_point(self, point: DataPoint) -> None:
-        self.points.append(point)
-
-    def filter(self, f) -> List[DataPoint]:
-        return list(filter(f, self.points))
-
-    def cast(self, types):
-        new_points = list(
-            map(lambda p: DataPoint(types[0](p.x), types[1](p.y)), self.points)
-        )
-        return self.__class__(new_points)
-
     def scale(self, index, factor):
         new_points = []
         for point in self.points:
