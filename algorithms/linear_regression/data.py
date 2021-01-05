@@ -2,12 +2,6 @@ import random
 from typing import Iterable, Tuple, List, Dict
 import matplotlib.pyplot as plt
 from algorithms.linear_regression.core import DataSet, DataPoint, Parameters
-import csv
-
-
-def load_csv(filename, encoding=None) -> List[Dict]:
-    with open(filename, newline="", encoding=encoding) as f:
-        return list(csv.DictReader(f))
 
 
 def generate(

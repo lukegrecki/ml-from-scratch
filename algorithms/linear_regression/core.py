@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Callable, Generator, TypeVar, Type
-import csv
 import logging
 
 
@@ -28,30 +27,11 @@ class DataSet:
     def from_dict(cls, d):
         return cls(points=list(map(lambda x: DataPoint(x, d[x]), d)))
 
-    @classmethod
-    def from_csv(cls, filename):
-        points = []
-        with open(filename, newline="") as f:
-            reader = csv.reader(f)
-            header = next(reader)
-            labels = (header[0], header[1])
-            for row in reader:
-                points.append(DataPoint(float(row[0]), float(row[1])))
-
-        return cls(points, labels)
-
     def add_point(self, point: DataPoint) -> None:
         self.points.append(point)
 
     def filter(self, f) -> List[DataPoint]:
         return list(filter(f, self.points))
-
-    def to_csv(self, filename, columns) -> None:
-        with open(filename, "w", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow(columns)
-            for point in self.points:
-                writer.writerow([point.x, point.y])
 
     def cast(self, types):
         new_points = list(
