@@ -1,5 +1,5 @@
 import numpy as np
-from typing import List, Optional, Tuple, Callable, Generator, TypeVar, Type
+from typing import Optional, Tuple
 import logging
 from .data import Parameters
 
@@ -33,18 +33,16 @@ def solve(
     tolerance: float,
     data: np.ndarray,
 ) -> Optional[Tuple[Parameters, float]]:
-    n = len(data)
-
     for epoch in range(epochs):
         predictions = predict(data, guess)
-        l = loss(data, predictions)
+        current_loss = loss(data, predictions)
 
         if epoch % 500 == 0:
             logging.info(f"Training epoch {epoch}...")
-            logging.info(f"Loss in current epoch is {l}")
+            logging.info(f"Loss in current epoch is {current_loss}")
 
-        if l < tolerance:
-            return (guess, l)
+        if current_loss < tolerance:
+            return (guess, current_loss)
 
         guess = update(guess, learning_rate, data, predictions)
 

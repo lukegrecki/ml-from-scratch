@@ -8,8 +8,7 @@ def read_csv(filename: str) -> np.ndarray:
     y = []
     with open(filename, newline="") as f:
         reader = csv.reader(f)
-        header = next(reader)
-        labels = (header[0], header[1])
+        next(reader)
         for row in reader:
             x.append(float(row[0]))
             y.append(float(row[1]))

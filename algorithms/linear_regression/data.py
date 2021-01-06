@@ -1,7 +1,4 @@
-import random
-from dataclasses import dataclass, field
-from typing import Iterable, Tuple, List, Dict, Generator
-import matplotlib.pyplot as plt
+from dataclasses import dataclass
 
 
 @dataclass
