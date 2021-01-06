@@ -15,17 +15,30 @@ class Hyperparameters:
 
 class Optimizer:
     def __init__(self, hyperparameters: Hyperparameters):
-        raise NotImplementedError
-
-    def solve(self, data: np.ndarray):
-        raise NotImplementedError
-
-
-class GradientDescent(Optimizer):
-    def __init__(self, hyperparameters: Hyperparameters):
         self.hyperparameters = hyperparameters
         self.solution = self.hyperparameters.initial_model
 
+    def update(self, data: np.ndarray, predictions: np.ndarray):
+        raise NotImplementedError
+
+    def solve(self, data: np.ndarray) -> Optional[Solution]:
+        for epoch in range(self.hyperparameters.epochs):
+            predictions = predict(data, self.solution)
+            current_loss = loss(data, predictions)
+
+            if (epoch % (self.hyperparameters.epochs // 10)) == 0:
+                logging.info(f"Training epoch {epoch}...")
+                logging.info(f"Loss in current epoch is {current_loss}")
+
+            if current_loss < self.hyperparameters.tolerance:
+                return Solution(self.solution, current_loss)
+
+            self.update(data, predictions)
+
+        return None
+
+
+class GradientDescent(Optimizer):
     def update(
         self,
         data: np.ndarray,
@@ -41,18 +54,7 @@ class GradientDescent(Optimizer):
 
         self.solution = ModelParameters(m, b)
 
-    def solve(self, data: np.ndarray) -> Optional[Solution]:
-        for epoch in range(self.hyperparameters.epochs):
-            predictions = predict(data, self.solution)
-            current_loss = loss(data, predictions)
 
-            if epoch % 500 == 0:
-                logging.info(f"Training epoch {epoch}...")
-                logging.info(f"Loss in current epoch is {current_loss}")
-
-            if current_loss < self.hyperparameters.tolerance:
-                return Solution(self.solution, current_loss)
-
-            self.update(data, predictions)
-
-        return None
+class StochasticGradientDescent(Optimizer):
+    def update(self, data: np.ndarray, predictions: np.ndarray):
+        pass
