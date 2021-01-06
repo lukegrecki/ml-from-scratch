@@ -1,43 +1,24 @@
+import numpy as np
 from typing import List, Optional, Tuple, Callable, Generator, TypeVar, Type
 import logging
-from .data import DataPoint, DataSet, Parameters
+from .data import Parameters
 
 
-def loss(data: DataSet, predictions: DataSet) -> float:
-    sum = 0.0
-    for i, point in enumerate(data.points):
-        sum += (point.y - predictions.points[i].y) ** 2
-
-    return sum
+def loss(data: np.ndarray, predictions: np.ndarray) -> float:
+    return np.square(data[:, 1] - predictions[:, 1]).mean()
 
 
-def predict(data: DataSet, parameters: Parameters) -> DataSet:
-    return DataSet(
-        points=[
-            DataPoint(point.x, parameters.b + parameters.m * point.x)
-            for point in data.points
-        ]
-    )
-
-
-def predict_point(x: float, parameters: Parameters) -> float:
-    return parameters.b + parameters.m * x
+def predict(data: np.ndarray, parameters: Parameters) -> np.ndarray:
+    return np.column_stack((data[:, 0], data[:, 0] * parameters.m + parameters.b))
 
 
 def update(
-    guess: Parameters, learning_rate: float, data: DataSet, predictions: DataSet
+    guess: Parameters, learning_rate: float, data: np.ndarray, predictions: np.ndarray
 ) -> Parameters:
     n = len(data)
 
-    b_derivative = sum(
-        [-2.0 * (data.points[i].y - predictions.points[i].y) for i in range(n)]
-    )
-    m_derivative = sum(
-        [
-            -2.0 * data.points[i].x * (data.points[i].y - predictions.points[i].y)
-            for i in range(n)
-        ]
-    )
+    b_derivative = -2.0 * np.sum(data[:, 1] - predictions[:, 1])
+    m_derivative = -2.0 * np.sum(data[:, 0] * (data[:, 1] - predictions[:, 1]))
 
     b = guess.b - (b_derivative / n) * learning_rate
     m = guess.m - (m_derivative / n) * learning_rate
@@ -50,7 +31,7 @@ def solve(
     epochs: int,
     guess: Parameters,
     tolerance: float,
-    data: DataSet,
+    data: np.ndarray,
 ) -> Optional[Tuple[Parameters, float]]:
     n = len(data)
 

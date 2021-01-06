@@ -1,19 +1,17 @@
-from algorithms.linear_regression.core import DataPoint, DataSet
+import numpy as np
 import algorithms.linear_regression.io as io
 
 
 def test_read_csv():
     ds = io.read_csv("tests/algorithms/linear_regression/fixtures/us_population.csv")
-    assert len(ds) == 60
-    assert ds.labels == ("year", "population")
-    assert ds.points[0] == DataPoint(1960.0, 180671000.0)
+    assert ds.shape == (60, 2)
+    assert np.array_equal(ds[0, :], np.array([1960.0, 180671000.0]))
 
 
 def test_to_csv():
-    points = [DataPoint(0.0, 1.0), DataPoint(2.0, 3.0)]
-    labels = ("X", "Y")
-    ds = DataSet(points, labels)
+    ds = np.array([[0.0, 1.0], [2.0, 3.0]])
     filename = "tests/algorithms/linear_regression/output/test.csv"
+    labels = ("year", "population")
     io.to_csv(ds, filename, labels)
 
-    assert io.read_csv(filename) == ds
+    assert np.array_equal(io.read_csv(filename), ds)
