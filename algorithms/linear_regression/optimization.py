@@ -1,15 +1,8 @@
+from typing import Optional
 import logging
 from .core import predict, loss, ModelParameters, Solution
 from dataclasses import dataclass
 import numpy as np
-
-
-class Optimizer:
-    def __init__(hyperparameters):
-        raise NotImplementedError
-
-    def solve(self, data):
-        raise NotImplementedError
 
 
 @dataclass
@@ -18,6 +11,14 @@ class Hyperparameters:
     tolerance: float
     epochs: int
     initial_model: ModelParameters
+
+
+class Optimizer:
+    def __init__(self, hyperparameters: Hyperparameters):
+        raise NotImplementedError
+
+    def solve(self, data: np.ndarray):
+        raise NotImplementedError
 
 
 class GradientDescent(Optimizer):
@@ -40,7 +41,7 @@ class GradientDescent(Optimizer):
 
         self.solution = ModelParameters(m, b)
 
-    def solve(self, data: np.ndarray):
+    def solve(self, data: np.ndarray) -> Optional[Solution]:
         for epoch in range(self.hyperparameters.epochs):
             predictions = predict(data, self.solution)
             current_loss = loss(data, predictions)
