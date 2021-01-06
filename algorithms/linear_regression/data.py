@@ -53,10 +53,3 @@ class DataSet:
 class Parameters:
     m: float
     b: float
-
-
-def plot(data: DataSet) -> None:
-    x = [point.x for point in data]
-    y = [point.y for point in data]
-
-    plt.plot(x, y, "o")
