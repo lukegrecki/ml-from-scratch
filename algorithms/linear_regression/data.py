@@ -42,6 +42,12 @@ class DataSet:
                 new_points.append(DataPoint(x=point.x, y=point.y - number))
         return self.__class__(new_points)
 
+    def x(self) -> List[DataPoint]:
+        return [point.x for point in self.points]
+
+    def y(self) -> List[DataPoint]:
+        return [point.y for point in self.points]
+
 
 @dataclass
 class Parameters:

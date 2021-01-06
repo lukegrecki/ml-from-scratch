@@ -20,6 +20,10 @@ def predict(data: DataSet, parameters: Parameters) -> DataSet:
     )
 
 
+def predict_point(x: float, parameters: Parameters) -> float:
+    return parameters.b + parameters.m * x
+
+
 def update(
     guess: Parameters, learning_rate: float, data: DataSet, predictions: DataSet
 ) -> Parameters:
@@ -51,11 +55,13 @@ def solve(
     n = len(data)
 
     for epoch in range(epochs):
-        logging.info(f"Training epoch {epoch}...")
         predictions = predict(data, guess)
         l = loss(data, predictions)
 
-        logging.info(f"Loss in current epoch is {l}")
+        if epoch % 500 == 0:
+            logging.info(f"Training epoch {epoch}...")
+            logging.info(f"Loss in current epoch is {l}")
+
         if l < tolerance:
             return (guess, l)
 

@@ -3,3 +3,6 @@ mypy:
 
 test: mypy
 	poetry run python -m pytest tests/
+
+lab:
+	poetry run jupyter lab
