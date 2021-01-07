@@ -18,27 +18,6 @@ class Optimizer:
         self.hyperparameters = hyperparameters
         self.solution = self.hyperparameters.initial_model
 
-    def update(self, data: np.ndarray, predictions: np.ndarray):
-        raise NotImplementedError
-
-    def solve(self, data: np.ndarray) -> Optional[Solution]:
-        for epoch in range(self.hyperparameters.epochs):
-            predictions = predict(data, self.solution)
-            current_loss = loss(data, predictions)
-
-            if (epoch % (self.hyperparameters.epochs // 10)) == 0:
-                logging.info(f"Training epoch {epoch}...")
-                logging.info(f"Loss in current epoch is {current_loss}")
-
-            if current_loss < self.hyperparameters.tolerance:
-                return Solution(self.solution, current_loss)
-
-            self.update(data, predictions)
-
-        return None
-
-
-class GradientDescent(Optimizer):
     def update(
         self,
         data: np.ndarray,
@@ -54,7 +33,50 @@ class GradientDescent(Optimizer):
 
         self.solution = ModelParameters(m, b)
 
+    def solve(self, data: np.ndarray) -> Optional[Solution]:
+        raise NotImplementedError
+
+    def log_progress(self, epoch):
+        if (epoch % (self.hyperparameters.epochs // 10)) == 0:
+            logging.info(f"Training epoch {epoch}...")
+            logging.info(f"Loss in current epoch is {self.loss}")
+
+    def evaluate(self):
+        if self.loss < self.hyperparameters.tolerance:
+            return Solution(self.solution, self.loss)
+
+
+class GradientDescent(Optimizer):
+    def solve(self, data: np.ndarray) -> Optional[Solution]:
+        for epoch in range(self.hyperparameters.epochs):
+            predictions = predict(data, self.solution)
+            self.loss = loss(data, predictions)
+            self.log_progress(epoch)
+
+            solution = self.evaluate()
+            if solution:
+                return solution
+            self.update(data, predictions)
+
+        return None
+
 
 class StochasticGradientDescent(Optimizer):
-    def update(self, data: np.ndarray, predictions: np.ndarray):
-        pass
+    def solve(self, data: np.ndarray) -> Optional[Solution]:
+        indices = np.arange(len(data))
+        for epoch in range(self.hyperparameters.epochs):
+            np.random.shuffle(indices)
+
+            for index in indices:
+                point = data[index : index + 1]
+                predictions = predict(point, self.solution)
+                self.update(point, predictions)
+
+            self.loss = loss(data, predict(data, self.solution))
+            self.log_progress(epoch)
+
+            solution = self.evaluate()
+            if solution:
+                return solution
+
+        return None
