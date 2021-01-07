@@ -48,6 +48,7 @@ class Optimizer:
 
 class GradientDescent(Optimizer):
     def solve(self, data: np.ndarray) -> Optional[Solution]:
+        self.solution = self.hyperparameters.initial_model
         for epoch in range(self.hyperparameters.epochs):
             predictions = predict(data, self.solution)
             self.loss = loss(data, predictions)
@@ -55,6 +56,7 @@ class GradientDescent(Optimizer):
 
             solution = self.evaluate()
             if solution:
+                logging.info(f"Solution found with loss {self.loss}")
                 return solution
             self.update(data, predictions)
 
@@ -63,6 +65,7 @@ class GradientDescent(Optimizer):
 
 class StochasticGradientDescent(Optimizer):
     def solve(self, data: np.ndarray) -> Optional[Solution]:
+        self.solution = self.hyperparameters.initial_model
         indices = np.arange(len(data))
         for epoch in range(self.hyperparameters.epochs):
             np.random.shuffle(indices)
@@ -77,6 +80,7 @@ class StochasticGradientDescent(Optimizer):
 
             solution = self.evaluate()
             if solution:
+                logging.info(f"Solution found with loss {self.loss}")
                 return solution
 
         return None
