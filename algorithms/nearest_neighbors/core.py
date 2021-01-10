@@ -15,13 +15,9 @@ def distance(a: np.ndarray, b: np.ndarray) -> float:
     return np.linalg.norm(a - b)
 
 
-def classify(
-    data: np.ndarray,
-    labels: List[str],
-    point: np.ndarray,
-    k: int,
-    weighted: bool = False,
-) -> Optional[str]:
+def find_nearest_neighbors(
+    data: np.ndarray, labels: List[str], point: np.ndarray, k: int
+) -> List[Neighbor]:
     nearest_neighbors = []
     max_distance = None
 
@@ -48,6 +44,18 @@ def classify(
 
             if not farthest_neighbor_indices:
                 max_distance = min(max_distance, d)
+
+    return nearest_neighbors
+
+
+def classify(
+    data: np.ndarray,
+    labels: List[str],
+    point: np.ndarray,
+    k: int,
+    weighted: bool = False,
+) -> Optional[str]:
+    nearest_neighbors = find_nearest_neighbors(data, labels, point, k)
 
     if not weighted:
         nearest_labels = map(lambda n: n.label, nearest_neighbors)
