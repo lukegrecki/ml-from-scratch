@@ -1,7 +1,7 @@
 from typing import Optional, List
 import numpy as np
 from dataclasses import dataclass
-from collections import Counter
+from collections import Counter, defaultdict
 
 
 @dataclass
@@ -16,7 +16,11 @@ def distance(a: np.ndarray, b: np.ndarray) -> float:
 
 
 def classify(
-    data: np.ndarray, labels: List[str], point: np.ndarray, k: int
+    data: np.ndarray,
+    labels: List[str],
+    point: np.ndarray,
+    k: int,
+    weighted: bool = False,
 ) -> Optional[str]:
     nearest_neighbors = []
     max_distance = None
@@ -45,11 +49,19 @@ def classify(
             if not farthest_neighbor_indices:
                 max_distance = min(max_distance, d)
 
-    nearest_labels = map(lambda n: n.label, nearest_neighbors)
-    label_counts = Counter(nearest_labels)
-    most_common_label_count = label_counts.most_common(n=1)
+    if not weighted:
+        nearest_labels = map(lambda n: n.label, nearest_neighbors)
+        label_counts = Counter(nearest_labels)
+        most_common_label_count = label_counts.most_common(n=1)
 
-    if most_common_label_count:
-        return most_common_label_count[0][0]
+        if most_common_label_count:
+            return most_common_label_count[0][0]
+    else:
+        label_weights = defaultdict(int)
+
+        for n in nearest_neighbors:
+            label_weights[n.label] += 1 / n.distance
+
+        return max(label_weights, key=lambda l: label_weights[l])
 
     return None
