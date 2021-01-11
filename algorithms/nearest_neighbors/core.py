@@ -8,7 +8,7 @@ from collections import Counter, defaultdict
 class Neighbor:
     point: np.ndarray
     distance: float
-    label: str
+    index: int
 
 
 def distance(a: np.ndarray, b: np.ndarray) -> float:
@@ -16,18 +16,16 @@ def distance(a: np.ndarray, b: np.ndarray) -> float:
 
 
 def find_nearest_neighbors(
-    data: np.ndarray, labels: List[str], point: np.ndarray, k: int
+    data: np.ndarray, point: np.ndarray, k: int
 ) -> List[Neighbor]:
     nearest_neighbors = []
     max_distance = None
 
-    for i, labeled_point in enumerate(data):
-        d = distance(labeled_point, point)
+    for i, data_point in enumerate(data):
+        d = distance(data_point, point)
 
         if len(nearest_neighbors) < k:
-            nearest_neighbors.append(
-                Neighbor(point=labeled_point, distance=d, label=labels[i])
-            )
+            nearest_neighbors.append(Neighbor(point=data_point, distance=d, index=i))
 
             if not max_distance:
                 max_distance = d
@@ -38,14 +36,22 @@ def find_nearest_neighbors(
                 i for i, n in enumerate(nearest_neighbors) if n.distance == max_distance
             ]
             nearest_neighbors.pop(farthest_neighbor_indices.pop(0))
-            nearest_neighbors.append(
-                Neighbor(point=labeled_point, distance=d, label=labels[i])
-            )
+            nearest_neighbors.append(Neighbor(point=data_point, distance=d, index=i))
 
             if not farthest_neighbor_indices:
                 max_distance = min(max_distance, d)
 
     return nearest_neighbors
+
+
+def predict(data: np.ndarray, values: np.ndarray, point: np.ndarray, k: int):
+    nearest_neighbors = find_nearest_neighbors(data, point, k)
+    weighted_values = [values[n.index] / n.distance for n in nearest_neighbors]
+
+    if weighted_values:
+        return sum(weighted_values)
+
+    return None
 
 
 def classify(
@@ -55,10 +61,10 @@ def classify(
     k: int,
     weighted: bool = False,
 ) -> Optional[str]:
-    nearest_neighbors = find_nearest_neighbors(data, labels, point, k)
+    nearest_neighbors = find_nearest_neighbors(data, point, k)
 
     if not weighted:
-        nearest_labels = map(lambda n: n.label, nearest_neighbors)
+        nearest_labels = map(lambda n: labels[n.index], nearest_neighbors)
         label_counts = Counter(nearest_labels)
         most_common_label_count = label_counts.most_common(n=1)
 
@@ -68,7 +74,7 @@ def classify(
         label_weights = defaultdict(int)
 
         for n in nearest_neighbors:
-            label_weights[n.label] += 1 / n.distance
+            label_weights[labels[n.index]] += 1 / n.distance
 
         return max(label_weights, key=lambda l: label_weights[l])
 
