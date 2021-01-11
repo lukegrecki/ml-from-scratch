@@ -44,7 +44,9 @@ def find_nearest_neighbors(
     return nearest_neighbors
 
 
-def predict(data: np.ndarray, values: np.ndarray, point: np.ndarray, k: int):
+def predict(
+    data: np.ndarray, values: np.ndarray, point: np.ndarray, k: int
+) -> Optional[float]:
     nearest_neighbors = find_nearest_neighbors(data, point, k)
     weighted_values = [values[n.index] / n.distance for n in nearest_neighbors]
 

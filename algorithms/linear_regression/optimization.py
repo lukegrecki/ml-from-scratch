@@ -3,6 +3,7 @@ import logging
 from .core import predict, loss, ModelParameters, Solution
 from dataclasses import dataclass
 import numpy as np
+import math
 
 
 @dataclass
@@ -17,6 +18,7 @@ class Optimizer:
     def __init__(self, hyperparameters: Hyperparameters):
         self.hyperparameters = hyperparameters
         self.model = self.hyperparameters.initial_model
+        self.loss = math.inf
 
     def update(
         self,
@@ -36,14 +38,15 @@ class Optimizer:
     def solve(self, data: np.ndarray) -> Optional[Solution]:
         raise NotImplementedError
 
-    def log_progress(self, epoch):
+    def log_progress(self, epoch) -> None:
         if (epoch % (self.hyperparameters.epochs // 10)) == 0:
             logging.info(f"Training epoch {epoch}...")
             logging.info(f"Loss in current epoch is {self.loss}")
 
-    def evaluate(self):
+    def evaluate(self) -> Optional[Solution]:
         if self.loss < self.hyperparameters.tolerance:
             return Solution(self.model, self.loss)
+        return None
 
 
 class GradientDescent(Optimizer):
