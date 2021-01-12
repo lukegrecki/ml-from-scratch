@@ -1,13 +1,13 @@
 from typing import Tuple, Optional
 import numpy as np
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
 class Model:
     bias: float
     weights: np.ndarray
-    label_names: Tuple[str, str] = ["0", "1"]
+    label_names: Tuple[str, str] = field(default=("0", "1"))
 
     def output(self, point: np.ndarray) -> int:
         if np.dot(self.weights, point) + self.bias > 0:
