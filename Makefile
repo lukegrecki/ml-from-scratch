@@ -2,7 +2,7 @@ mypy:
 	poetry run mypy algorithms
 
 lint:
-	poetry run flake8 --max-line-length=100 --ignore=E203 algorithms
+	poetry run flake8 --max-line-length=100 --ignore=E203,W503 algorithms
 
 test: mypy lint
 	poetry run python -m pytest tests/
