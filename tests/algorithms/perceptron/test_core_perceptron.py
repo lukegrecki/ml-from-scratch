@@ -15,3 +15,19 @@ def test_model():
     point = np.array([-2.0, -1.0])
     assert model.output(point) == 0
     assert model.classify(point) == "cat"
+
+
+def test_train():
+    data = np.array([[1.0, 1.0], [3.0, 3.0]])
+    labels = np.array([0, 1])
+    initial_model = Model(
+        bias=0.0, weights=np.array([0.0, 0.0]), label_names=("cat", "dog")
+    )
+    hyperparameters = Hyperparameters(
+        learning_rate=0.01, initial_model=initial_model, epochs=100, tolerance=0.001
+    )
+
+    learned_model, error = train(data, labels, hyperparameters)
+
+    assert learned_model.classify(data[0]) == "cat"
+    assert learned_model.classify(data[1]) == "dog"

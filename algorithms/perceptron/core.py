@@ -31,22 +31,25 @@ def train(
     data: np.ndarray,
     labels: np.ndarray,
     hyperparameters: Hyperparameters,
-) -> Optional[Model]:
+) -> Optional[Tuple[Model, float]]:
     model = hyperparameters.initial_model
 
-    for epoch in hyperparameters.epochs:
+    for epoch in range(hyperparameters.epochs):
         for i, point in enumerate(data):
             output = model.output(point)
             expected_output = labels[i]
+            model.bias = model.bias + hyperparameters.learning_rate * (
+                expected_output - output
+            )
             model.weights = (
                 model.weights
                 + hyperparameters.learning_rate * (expected_output - output) * point
             )
 
         outputs = np.array([model.output(point) for point in data])
-        error = (1 / len(data)) * np.sum(labels - outputs)
+        error = (1 / len(data)) * np.sum(np.absolute(labels - outputs))
 
         if error < hyperparameters.tolerance:
-            return model
+            return (model, error)
 
     return None
