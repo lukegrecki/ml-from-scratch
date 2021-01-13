@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 class Model:
     bias: float
     weights: np.ndarray
-    label_names: Tuple[str, str] = field(default=("0", "1"))
+    labels: Tuple[str, str] = field(default=("0", "1"))
 
     def output(self, point: np.ndarray) -> int:
         if np.dot(self.weights, point) + self.bias > 0:
@@ -16,7 +16,7 @@ class Model:
             return 0
 
     def classify(self, point: np.ndarray) -> str:
-        return self.label_names[self.output(point)]
+        return self.labels[self.output(point)]
 
 
 @dataclass
@@ -29,15 +29,16 @@ class Hyperparameters:
 
 def train(
     data: np.ndarray,
-    labels: np.ndarray,
+    values: np.ndarray,
     hyperparameters: Hyperparameters,
 ) -> Optional[Tuple[Model, float]]:
     model = hyperparameters.initial_model
 
     for epoch in range(hyperparameters.epochs):
+        outputs = []
         for i, point in enumerate(data):
             output = model.output(point)
-            expected_output = labels[i]
+            expected_output = values[i]
             model.bias = model.bias + hyperparameters.learning_rate * (
                 expected_output - output
             )
@@ -45,9 +46,10 @@ def train(
                 model.weights
                 + hyperparameters.learning_rate * (expected_output - output) * point
             )
+            outputs.append(output)
 
-        outputs = np.array([model.output(point) for point in data])
-        error = (1 / len(data)) * np.sum(np.absolute(labels - outputs))
+        outputs = np.array(outputs)
+        error = (1 / len(data)) * np.sum(np.absolute(values - outputs))
 
         if error < hyperparameters.tolerance:
             return (model, error)
