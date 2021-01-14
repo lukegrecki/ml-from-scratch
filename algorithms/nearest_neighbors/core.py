@@ -111,7 +111,7 @@ def classify(
         labels: A list of labels corresponding to the data points.
         point: The data point to classify.
         k: The number of nearest neighbors to find.
-        weighted (optional): A boolean determining whether to weight the nearest classes by distance.
+        weighted (optional): A boolean deciding if to weight the nearest classes by distance.
 
     Returns:
         The predicted class if it exists, None otherwise.

@@ -27,6 +27,6 @@ def test_train():
         learning_rate=0.01, initial_model=initial_model, epochs=100, tolerance=0.001
     )
 
-    learned_model, error = train(data, values, hyperparameters)
+    solution = train(data, values, hyperparameters)
 
-    assert learned_model.classify(data) == ["cat", "dog"]
+    assert solution.model.classify(data) == ["cat", "dog"]
