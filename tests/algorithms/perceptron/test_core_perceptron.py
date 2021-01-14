@@ -8,13 +8,15 @@ def test_model():
     labels = ("cat", "dog")
     model = Model(bias, weights, labels)
 
-    point = np.array([1.0, 2.0])
-    assert model.output(point) == 1
-    assert model.classify(point) == "dog"
+    x_1 = np.array([1.0, 2.0])
+    assert model.output(x_1) == 1
 
-    point = np.array([-2.0, -1.0])
-    assert model.output(point) == 0
-    assert model.classify(point) == "cat"
+    x_2 = np.array([-2.0, -1.0])
+    assert model.output(x_2) == 0
+
+    points = np.array([x_1, x_2])
+    assert np.array_equal(model.outputs(points), np.array([1, 0]))
+    assert model.classify(np.array([x_1, x_2])) == ["dog", "cat"]
 
 
 def test_train():
@@ -27,5 +29,4 @@ def test_train():
 
     learned_model, error = train(data, values, hyperparameters)
 
-    assert learned_model.classify(data[0]) == "cat"
-    assert learned_model.classify(data[1]) == "dog"
+    assert learned_model.classify(data) == ["cat", "dog"]

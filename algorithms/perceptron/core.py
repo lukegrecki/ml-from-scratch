@@ -1,4 +1,4 @@
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 import numpy as np
 from dataclasses import dataclass, field
 
@@ -18,8 +18,8 @@ class Model:
     def outputs(self, points: np.ndarray) -> np.ndarray:
         return np.array([self.output(point) for point in points])
 
-    def classify(self, point: np.ndarray) -> str:
-        return self.labels[self.output(point)]
+    def classify(self, points: np.ndarray) -> List[str]:
+        return [self.labels[self.output(point)] for point in points]
 
 
 @dataclass
