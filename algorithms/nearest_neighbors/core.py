@@ -6,8 +6,7 @@ from collections import Counter, defaultdict
 
 @dataclass
 class Neighbor:
-    """
-    A container class for nearest neighbors.
+    """A container class for nearest neighbors.
 
     Attributes:
         point: A numpy array representing a data point.
@@ -74,8 +73,7 @@ def find_nearest_neighbors(
 def predict(
     data: np.ndarray, values: np.ndarray, point: np.ndarray, k: int
 ) -> Optional[float]:
-    """
-    Predict the value of the function at a given point.
+    """Predict the value of the function at a given point.
 
     Args:
         data: A numpy array of data points.
@@ -103,8 +101,7 @@ def classify(
     k: int,
     weighted: bool = False,
 ) -> Optional[str]:
-    """
-    Classify a point given a set of data points and labels.
+    """Classify a point given a set of data points and labels.
 
     Args:
         data: A numpy array of data points.

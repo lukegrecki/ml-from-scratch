@@ -95,8 +95,7 @@ class GradientDescent(Optimizer):
     """
 
     def solve(self, data: np.ndarray) -> Optional[Solution]:
-        """
-        Returns a solution to the problem if one exists.
+        """Returns a solution to the problem if one exists.
 
         Args:
             data: A 2D numpy array of data points.
@@ -122,8 +121,7 @@ class GradientDescent(Optimizer):
 
 class StochasticGradientDescent(Optimizer):
     def solve(self, data: np.ndarray) -> Optional[Solution]:
-        """
-        Returns a solution to the problem if one exists.
+        """Returns a solution to the problem if one exists.
 
         Args:
             data: A 2D numpy array of data points.

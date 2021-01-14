@@ -100,7 +100,7 @@ def train(
         hyperparameters: The hyperparameters for optimization.
 
     Returns:
-        A Solution if one exists, none otherwise.
+        A Solution if one exists, None otherwise.
     """
 
     model = hyperparameters.initial_model
