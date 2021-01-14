@@ -15,6 +15,9 @@ class Model:
         else:
             return 0
 
+    def outputs(self, points: np.ndarray) -> np.ndarray:
+        return np.array([self.output(point) for point in points])
+
     def classify(self, point: np.ndarray) -> str:
         return self.labels[self.output(point)]
 
