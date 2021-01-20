@@ -12,6 +12,7 @@ class Model:
     """
 
     weights: np.ndarray
+    threshold: float = 0.5
 
     def probability(self, x: np.ndarray, output_class: int) -> float:
         """The probability that the given input is in the output class.
@@ -36,3 +37,20 @@ class Model:
             return 1 - probability_of_one
         else:
             raise ValueError("output_class must be in (0, 1)")
+
+    def classify(self, x: np.ndarray) -> int:
+        """The predicted class for the given input.
+
+        Args:
+            x: The given data point at which to evaluate the model.
+
+        Returns:
+            The predicted class in (0, 1) of the data point.
+        """
+
+        p = self.probability(x, output_class=1)
+
+        if p > self.threshold:
+            return 1
+        else:
+            return 0

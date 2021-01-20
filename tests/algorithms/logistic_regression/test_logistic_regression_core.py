@@ -13,3 +13,15 @@ def test_probability():
 
     with pytest.raises(ValueError):
         model.probability(x, output_class=3)
+
+
+def test_classify():
+    weights = np.array([1.0, 1.0, 2.0])
+    x = np.array([3.0, 5.0])
+    model = Model(weights, threshold=0.75)
+
+    assert model.classify(x) == 1
+
+    model = Model(weights, threshold=0.9999999)
+
+    assert model.classify(x) == 0
