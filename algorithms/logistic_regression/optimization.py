@@ -7,6 +7,16 @@ from .core import Model, Solution
 
 
 def log_loss(labeled_data: np.ndarray, predictions: np.ndarray) -> float:
+    """The standard log loss function.
+
+    Args:
+        labeled_data: The labeled data as an array.
+        predictions: The set of predicted probabilities for each data
+            point to be in the class '1'.
+
+    Returns:
+        The calculated loss value.
+    """
     n = len(labeled_data)
     labels = labeled_data[:, -1]
 

@@ -60,7 +60,7 @@ class Solution:
 
     Attributes:
         model: Trained logistic model.
-        loss: Training loss for the linear model.
+        loss: Training loss for the logistic model.
     """
 
     model: Model
