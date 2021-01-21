@@ -5,23 +5,27 @@ from algorithms.logistic_regression.core import Model
 
 def test_probability():
     weights = np.array([1.0, 1.0, 2.0])
-    x = np.array([3.0, 5.0])
+    data = np.array([[3.0, 5.0], [4.0, 5.0]])
     model = Model(weights)
 
-    assert round(model.probability(x, output_class=0), 3) == 0
-    assert round(model.probability(x, output_class=1), 3) == 1
+    assert np.array_equal(
+        np.around(model.probability(data, output_class=0)), np.array([0, 0])
+    )
+    assert np.array_equal(
+        np.around(model.probability(data, output_class=1)), np.array([1, 1])
+    )
 
     with pytest.raises(ValueError):
-        model.probability(x, output_class=3)
+        model.probability(data, output_class=3)
 
 
 def test_classify():
     weights = np.array([1.0, 1.0, 2.0])
-    x = np.array([3.0, 5.0])
+    data = np.array([[3.0, 5.0], [4.0, 5.0]])
     model = Model(weights, threshold=0.75)
 
-    assert model.classify(x) == 1
+    assert np.array_equal(model.classify(data), np.array([1.0, 1.0]))
 
     model = Model(weights, threshold=0.9999999)
 
-    assert model.classify(x) == 0
+    assert np.array_equal(model.classify(data), np.array([0.0, 0.0]))
