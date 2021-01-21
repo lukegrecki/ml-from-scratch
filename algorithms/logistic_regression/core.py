@@ -50,7 +50,20 @@ class Model:
 
         p = self.probability(x, output_class=1)
 
-        if p > self.threshold:
+        if p >= self.threshold:
             return 1
         else:
             return 0
+
+
+@dataclass
+class Solution:
+    """A container class for a model with its training loss.
+
+    Attributes:
+        model: Trained logistic model.
+        loss: Training loss for the linear model.
+    """
+
+    model: Model
+    loss: float
