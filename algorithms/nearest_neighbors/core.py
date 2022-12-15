@@ -57,7 +57,7 @@ def find_nearest_neighbors(
                 max_distance = d
             else:
                 max_distance = max(max_distance, d)
-        elif d < max_distance:
+        elif max_distance and d < max_distance:
             farthest_neighbor_indices = [
                 i for i, n in enumerate(nearest_neighbors) if n.distance == max_distance
             ]
@@ -123,7 +123,7 @@ def classify(
         if most_common_label_count:
             return most_common_label_count[0][0]
     else:
-        label_weights = defaultdict(int)
+        label_weights = defaultdict(float)
 
         for n in nearest_neighbors:
             label_weights[labels[n.index]] += 1 / n.distance

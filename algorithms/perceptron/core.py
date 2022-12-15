@@ -105,7 +105,7 @@ def train(
 
     model = hyperparameters.initial_model
 
-    for epoch in range(hyperparameters.epochs):
+    for _ in range(hyperparameters.epochs):
         outputs = []
         for i, point in enumerate(data):
             output = model.output(point)

@@ -1,0 +1,11 @@
+{
+  "include": ["algorithms"],
+  "exclude": ["**/__pycache__", "tests"],
+  "venvPath": ".venv",
+  "useLibraryCodeForTypes": false,
+  "reportMissingTypeStubs": false,
+  "reportMissingImports": true,
+  "typeCheckingMode": "off",
+  "pythonVersion": "3.8",
+  "pythonPlatform": "Linux"
+}
