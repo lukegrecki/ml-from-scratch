@@ -2,10 +2,10 @@ mypy:
 	poetry run mypy algorithms
 
 pyright:
-	pyright
+	poetry run pyright
 
 watch:
-	pyright --watch
+	poetry run pyright --watch
 
 lint:
 	poetry run flake8 --max-line-length=100 --ignore=E203,W503 algorithms
