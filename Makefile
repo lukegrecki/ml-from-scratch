@@ -10,7 +10,7 @@ watch:
 lint:
 	poetry run flake8 --max-line-length=100 --ignore=E203,W503 algorithms
 
-test: pyright lint
+test:
 	poetry run python -m pytest tests/
 
 lab:
