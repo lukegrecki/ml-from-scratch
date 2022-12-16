@@ -19,6 +19,7 @@ flake8 = "^3.8.4"
 pandas = "^1.2.0"
 matplotlib = "^3.3.3"
 nbconvert = "^6.0.7"
+pyright = "^1.1.284"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
